@@ -42,24 +42,21 @@ getFXSymbols <- function(Symbols,
 
 
 #-------------------------Generate data----------------------------------------------------------
-lapply(X = syms, FUN = getFXSymbols, from = from, to = to)
-mkData <- Cl(AUDUSD)
-colnames(mkData) <- "Close"
-
-
-
-
+lapply(X = syms, FUN = getFXSymbols, from = from, to = to) #Import data
+mkData <- Cl(AUDUSD) #Store only the close price of the data
+colnames(mkData) <- "Close" #Naming the column
 
 #-------------------------Initiate portfolio and account-------------------------------------------
-qs.strategy <- "qsFaber"
+qs.strategy <- "qsFaber" #Name the strategy
 
-initPortf(qs.strategy, "mkData", initDate = initDate)
-initAcct(qs.strategy, portfolios = qs.strategy, initDate = initDate, initEq = initEq)
-initOrders(portfolio = qs.strategy, initDate = initDate)
+initPortf(qs.strategy, "mkData", initDate = initDate) #Initiate portfolio
+initAcct(qs.strategy, portfolios = qs.strategy, initDate = initDate, initEq = initEq) #Initiate account
+initOrders(portfolio = qs.strategy, initDate = initDate) #Initiate account
 
-strategy(qs.strategy, store = TRUE)
+strategy(qs.strategy, store = TRUE) #Store all the events in the strategy
 
 #-------------------------Add indicator-------------------
+#Calculate the moving average for 30 periods
 add.indicator(strategy = qs.strategy,
               name = "SMA",
               arguments = list (x = mkData$Close,
@@ -80,6 +77,7 @@ add.signal(qs.strategy,
                             relationship = "lt"),
            label = "Cl.lt.SMA")
 #-------------------------Add rules to buy and sell ---------
+#Buy 100 when the enter signal is triggered and sell all when the exit signal is triggered
 add.rule(qs.strategy, name = "ruleSignal",
          arguments = list(sigcol = "Cl.gt.SMA",
                           sigval = TRUE,
@@ -97,7 +95,6 @@ add.rule(qs.strategy, name = "ruleSignal",
          type = "exit")
 #-------------------------Apply Strategy ------------
 applyStrategy(strategy = qs.strategy, portfolios = qs.strategy)
-
 getTxns(Portfolio = qs.strategy, Symbol = "mkData")
 
 #-------------------------Update portfolio, account and equity------------
