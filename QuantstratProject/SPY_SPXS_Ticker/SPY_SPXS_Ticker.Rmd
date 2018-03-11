@@ -1,0 +1,44 @@
+---
+title: "SPY vs SPXS Impact on other tickers"
+output:
+  html_document:
+    df_print: paged
+---
+
+The purpose of this code is to find best buying oppurtunity using SPY and SPXS as indicators.
+
+```{r, echo = FALSE, warning=FALSE, message=FALSE}
+library(quantstrat)
+```
+
+###Functions
+All the functions created for this project will be stored under this.
+
+```{r functions}
+adjustStartDate <- function(syms.company, syms.Index) {
+  data.company <- get(syms.company)
+  firstDate <- first(index(data.company))
+  lastDate <- last(index(data.company))
+  index.short <- paste(firstDate, lastDate, sep = "/")
+  
+  for (i in 1: length(syms.Index)) {
+    data.Index.temp <- get(syms.Index[i])
+    data.Index.temp <- data.Index.temp[index.short]
+    assign(syms.Index[i], data.Index.temp, envir = .GlobalEnv)
+  }
+  print("All data have same starting and ending date")
+}
+```
+###Select symbols
+We have divided symbols into two categories. Indicators (index) and company or ticker
+Since some company's data is shorter than indicators, the ```adjustStartDate()``` function 
+will make them all equal size in order to avoid error.
+
+```{r load data, message=FALSE}
+syms.Index <-c("SPY", "SPXS")
+syms.company <- "CLDR"
+getSymbols(syms.Index)
+getSymbols(syms.company)
+adjustStartDate(syms.company, syms.Index)
+```
+
