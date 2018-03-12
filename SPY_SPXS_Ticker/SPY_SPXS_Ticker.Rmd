@@ -36,9 +36,40 @@ will make them all equal size in order to avoid error.
 
 ```{r load data, message=FALSE}
 syms.Index <-c("SPY", "SPXS")
-syms.company <- "CLDR"
+syms.company <- "DIS"
 getSymbols(syms.Index)
 getSymbols(syms.company)
 adjustStartDate(syms.company, syms.Index)
+```
+
+
+```{r}
+SPY.scale <- scale(SPY$SPY.Close)
+SPXS.scale <- scale(SPXS$SPXS.Close)
+plot(SPY.scale)
+lines(SPXS.scale, col = "blue")
+lines(-SPXS.scale, col = "darkgreen")
+legend("topright",c("SPY", "SPXS", "Inv SPXS"),
+       col=c("black", "blue", "darkgreen"), cex=0.8)
+#I dont know why the legend is not showing, we will visit this issue later
+```
+
+```{r}
+Sym.BBands <- BBands(CLDR[,c(2:4)])["2016/2018"]
+SPY.BBands <- BBands(SPY[,c(2:4)])["2016/2018"]
+SPXS.BBands <- BBands(SPXS[,c(2:4)])["2016/2018"]
+SPY.temp <- SPY["2016/2018"]
+chart_Series(SPY["2016/2018"])
+add_TA(SPY.BBands["2016/2018","dn"], on = 1, col = "blue", lty = 2)
+add_TA(SPY.BBands[,"up"], on = 1, col = "blue", lty = 2)
+
+chart_Series(SPXS["2016/2018"])
+add_TA(SPXS.BBands["2016/2018","dn"], on = 1, col = "blue", lty = 2)
+add_TA(SPXS.BBands[,"up"], on = 1, col = "blue", lty = 2)
+
+chart_Series(CLDR["2016/2018"])
+add_TA(Sym.BBands["2016/2018","dn"], on = 1, col = "blue", lty = 2)
+add_TA(Sym.BBands[,"up"], on = 1, col = "blue", lty = 2)
+
 ```
 
