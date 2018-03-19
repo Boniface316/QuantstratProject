@@ -1,11 +1,11 @@
-rm.strat(qs.strategy) #clear the strategy before the re-run
-rm(list = ls()) #Clear all data
-
 #Setup library----------------------------------------------------------------
 library("quantstrat")
 
+currency("USD")
+stock("SPY",currency="USD",multiplier=1)
+
 # read in data -----------------------------------------------------------------
-sym <- get(getSymbols("SPY"))
+getSymbols("SPY")
 
 #Set the parameters
 initDate <- "2012-12-31" #Date of initiation
